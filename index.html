@@ -1,0 +1,1241 @@
+<!doctype html>
+<html class="no-js" lang="en">
+    
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>66 Days</title>
+        <meta name="description" content="Across Canada in 66 days by Bicycle">
+        <meta name="author" content="Matthew Bennett">
+        <!-- Must Link Font Weights separately for Firefox, Chrome & iOS -->
+        <link href='http://fonts.googleapis.com/css?family=Lato:400' rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=Lato:900' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="css/reset.css">
+        <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="css/hover.css">
+        <link rel="stylesheet" href="css/contactform.css">
+        <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css">
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+        <script type="text/javascript" src="js/jquery.kinetic.js"></script>
+        <link href='css/panorama_viewer.css' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="css/gearicons.css" />
+        <script src="themes/modern-slide-in/jquery.sequence-min.js"></script>
+        <script src="themes/modern-slide-in/sequencejs-options.modern-slide-in.js"></script>
+        <link href="css/jquery.nouislider.min.css" rel="stylesheet">
+        <script src="js/jquery.nouislider.min.js"></script>
+        <script>
+            var Link = $.noUiSlider.Link;
+            var sequence = $("#sequence").sequence().data("sequence");
+        </script>
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false&key=AIzaSyD0bARQgyEDuZF4t7DGs9_w6tA1CXCKxmk"></script>
+        
+        <!-- Contact form -->
+        <style type="text/css">
+		.antispam { display:none;}
+	</style>
+	
+	<script type="text/javascript">
+		// split your email into two parts and remove the @ symbol
+		var first = "mattsbennett";
+		var last = "gmail.com";
+	</script>
+        
+    </head>
+    
+<body>
+    <!-- Section #1 / Intro -->
+    <div id="intro" class="body">
+        <div id="bike-logo">
+            <img src="images/66logo.png">
+        </div>
+        <div id="title-left-intro">
+            <h1d>66 Days</h1d>
+        </div>
+        <div id="small-nav-sections">
+            <ul>
+                <li><div id="bottom-button"><i class="fa fa-angle-double-down"></i></div></li>
+                <li><div id="top-button"><i class="fa fa-angle-double-up"></i></div></li>
+                <li><div id="panoramas-button">Photos</div></li>
+                <li><div id="trip-stats-button">Tour Details</div></li>
+                <li><div id="map-button">Map</div></li>
+            </ul>
+        </div>
+        <div id="title-right-intro">
+            <h1b>A Cross-Canada Bicycle Tour</h1b>
+        </div>
+    </div>
+    <div id="main" role="main">
+        <!-- Section #2 / Map-->
+        <div id="map" data-type="background">
+            <div id='map-canvas'></div>
+        </div>
+        <!-- Section #3 / Stats Buttons-->
+        <div class="stats-title">
+            <div id="distance-title">DISTANCE</div>
+            <div id="elevation-title">ELEVATION</div>
+            <div id="duration-title">DURATION</div>
+            <div id="gear-title">GEAR</div>
+        </div>
+        <div id="stats-buttons-wrapper">
+            <div id="stats-buttons">
+                <div id="distance-button">
+                    <a class="float"><img src="images/buttons/distancebutton8.png"></a>
+                </div>
+                <div id="elevation-button">
+                    <a class="float"><img src="images/buttons/elevationbutton8.png"></a>
+                </div>
+                <div id="duration-button">
+                    <a class="float"><img src="images/buttons/durationbutton8.png"></a>
+                </div>
+                <div id="gear-button">
+                    <a class="float"><img src="images/buttons/gearbutton8.png"></a>
+                </div>
+            </div>
+        </div>
+        <!-- Section #4 / Stats Views-->
+        <div class="slider-cluster" id="distance-cluster">
+            <div class="slider-wrapper">
+                <div class="distance-slider">
+                    <div class='label'>Cross-Canada Bicycle Tour</div>
+                    <div class="slider" id="slider1"></div>
+                    <span id="slider1-span"></span>
+                    <p>
+                        <div class='label'>2013 Tour de France</div>
+                    </p>
+                    <div class="slider" id="slider2"></div>
+                    <span id="slider2-span"></span>
+                    <!--<button style="float:right;margin:20px 0 0" class="button">unlock</button>-->
+                    <script>
+                        // Store the locked state and slider values.
+                        var lockedState = true,
+                            values = [0, 0],
+                            slider1 = $("#slider1"),
+                            slider2 = $("#slider2");
+
+                        // When the button is clicked, the locked
+                        // state is inverted.
+                        $("button").click(function() {
+                            lockedState = !lockedState;
+                            $(this).text(lockedState ? 'unlock' : 'lock');
+                        });
+
+                        function crossUpdate(value, handle, slider) {
+
+                            // If the sliders aren't interlocked, don't
+                            // cross-update.
+                            if (!lockedState) return;
+
+                            // Select whether to increase or decrease
+                            // the other slider value.
+                            var lValue = slider1.is(slider) ? 1 : 0,
+                                hValue = lValue ? 0 : 1;
+
+                            // Modify the slider value.
+                            value -= (values[hValue] - values[lValue]);
+
+                            // Set the other slider value. Set the update
+                            // option to false, so that the slider doesn't
+                            // send back another .val() call.
+                            $(this).val(value, {
+                                update: false
+                            });
+                        }
+
+                        // When a slider changes, store the new values.
+                        $(".slider").on('set',
+
+                        function() {
+
+                            // The .val() function returns a string,
+                            // but we wan't to do substractions, so
+                            // convert the values to numbers.
+                            values = [Number(slider1.val()),
+                            Number(slider2.val())];
+                        });
+
+                        slider1.noUiSlider({
+                            range: {
+                                'min': [0],
+                                'max': [6643]
+                            },
+                            start: [0],
+                            connect: 'upper',
+                            serialization: {
+                                lower: [
+
+                                // The value will be send to the other slider,
+                                // using a custom function as the serialization
+                                // method. The function uses the global 'lockedState'
+                                // variable to decide whether the other slider is updated.
+                                new Link({
+                                    target: slider2,
+                                    method: crossUpdate
+                                }, false),
+
+                                new Link({
+                                    target: $("#slider1-span"),
+                                    format: {
+                                        decimals: 0,
+                                        postfix: ' km'
+                                    }
+                                })
+
+                                ]
+                            },
+                        });
+
+                        slider2.noUiSlider({
+                            range: {
+                                'min': [0],
+                                'max': [3403]
+                            },
+                            start: [0],
+                            connect: 'upper',
+                            serialization: {
+                                lower: [
+
+                                new Link({
+                                    target: slider1,
+                                    method: crossUpdate
+                                }, false),
+
+                                new Link({
+                                    target: $("#slider2-span"),
+                                    format: {
+                                        decimals: 0,
+                                        postfix: ' km'
+                                    }
+                                })]
+                            }
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+        <div class="slider-cluster" id="elevation-cluster">
+            <div class="slider-wrapper">
+                <div class="elevation-slider">
+                    <div class='label'>Cross-Canada Bicycle Tour</div>
+                    <div class="slider" id="slider3"></div>
+                    <span id="slider3-span"></span>
+                    <p>
+                        <div class='label'>2013 Tour de France</div>
+                    </p>
+                    <div class="slider" id="slider4"></div>
+                    <span id="slider4-span"></span>
+                    <!--<button style="float:right;margin:20px 0 0" class="button1">unlock</button>-->
+                    <script>
+                        // Store the locked state and slider values.
+                        var lockedState = true,
+                            values = [0, 0],
+                            slider3 = $("#slider3"),
+                            slider4 = $("#slider4");
+
+                        // When the button is clicked, the locked
+                        // state is inverted.
+                        $("button1").click(function() {
+                            lockedState = !lockedState;
+                            $(this).text(lockedState ? 'unlock' : 'lock');
+                        });
+
+                        function crossUpdate(value, handle, slider) {
+
+                            // If the sliders aren't interlocked, don't
+                            // cross-update.
+                            if (!lockedState) return;
+
+                            // Select whether to increase or decrease
+                            // the other slider value.
+                            var lValue = slider3.is(slider) ? 1 : 0,
+                                hValue = lValue ? 0 : 1;
+
+                            // Modify the slider value.
+                            value -= (values[hValue] - values[lValue]);
+
+                            // Set the other slider value. Set the update
+                            // option to false, so that the slider doesn't
+                            // send back another .val() call.
+                            $(this).val(value, {
+                                update: false
+                            });
+                        }
+
+                        // When a slider changes, store the new values.
+                        $(".slider").on('set',
+
+                        function() {
+
+                            // The .val() function returns a string,
+                            // but we wan't to do substractions, so
+                            // convert the values to numbers.
+                            values = [Number(slider3.val()),
+                            Number(slider4.val())];
+                        });
+
+                        slider3.noUiSlider({
+                            range: {
+                                'min': [0],
+                                'max': [50374]
+                            },
+                            start: [0],
+                            connect: 'upper',
+                            serialization: {
+                                lower: [
+
+                                // The value will be send to the other slider,
+                                // using a custom function as the serialization
+                                // method. The function uses the global 'lockedState'
+                                // variable to decide whether the other slider is updated.
+                                new Link({
+                                    target: slider4,
+                                    method: crossUpdate
+                                }, false),
+
+                                new Link({
+                                    target: $("#slider3-span"),
+                                    format: {
+                                        decimals: 0,
+                                        postfix: ' m'
+                                    }
+                                })
+
+                                ]
+                            },
+                        });
+
+                        slider4.noUiSlider({
+                            range: {
+                                'min': [0],
+                                'max': [21125]
+                            },
+                            start: [0],
+                            connect: 'upper',
+                            serialization: {
+                                lower: [
+
+                                new Link({
+                                    target: slider3,
+                                    method: crossUpdate
+                                }, false),
+
+                                new Link({
+                                    target: $("#slider4-span"),
+                                    format: {
+                                        decimals: 0,
+                                        postfix: ' m'
+                                    }
+                                })
+
+                                ]
+                            }
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+        <div class="slider-cluster" id="duration-cluster">
+            <div class="slider-wrapper">
+                <div class="duration-slider">
+                    <div class='label'>Cross-Canada Bicycle Tour</div>
+                    <div class="slider" id="slider5"></div>
+                    <span id="slider5-span"></span>
+                    <p>
+                        <div class='label'>2013 Tour de France</div>
+                    </p>
+                    <div class="slider" id="slider6"></div>
+                    <span id="slider6-span"></span>
+                    <!--<button style="float:right;margin:20px 0 0" class="button1">unlock</button>-->
+                    <script>
+                        // Store the locked state and slider values.
+                        var lockedState = true,
+                            values = [0, 0],
+                            slider5 = $("#slider5"),
+                            slider6 = $("#slider6");
+
+                        // When the button is clicked, the locked
+                        // state is inverted.
+                        $("button1").click(function() {
+                            lockedState = !lockedState;
+                            $(this).text(lockedState ? 'unlock' : 'lock');
+                        });
+
+                        function crossUpdate(value, handle, slider) {
+
+                            // If the sliders aren't interlocked, don't
+                            // cross-update.
+                            if (!lockedState) return;
+
+                            // Select whether to increase or decrease
+                            // the other slider value.
+                            var lValue = slider5.is(slider) ? 1 : 0,
+                                hValue = lValue ? 0 : 1;
+
+                            // Modify the slider value.
+                            value -= (values[hValue] - values[lValue]);
+
+                            // Set the other slider value. Set the update
+                            // option to false, so that the slider doesn't
+                            // send back another .val() call.
+                            $(this).val(value, {
+                                update: false
+                            });
+                        }
+
+                        // When a slider changes, store the new values.
+                        $(".slider").on('set',
+
+                        function() {
+
+                            // The .val() function returns a string,
+                            // but we wan't to do substractions, so
+                            // convert the values to numbers.
+                            values = [Number(slider5.val()),
+                            Number(slider6.val())];
+                        });
+
+                        slider5.noUiSlider({
+                            range: {
+                                'min': [0],
+                                'max': [66]
+                            },
+                            start: [0],
+                            connect: 'upper',
+                            serialization: {
+                                lower: [
+
+                                // The value will be send to the other slider,
+                                // using a custom function as the serialization
+                                // method. The function uses the global 'lockedState'
+                                // variable to decide whether the other slider is updated.
+                                new Link({
+                                    target: slider6,
+                                    method: crossUpdate
+                                }, false),
+
+                                new Link({
+                                    target: $("#slider5-span"),
+                                    format: {
+                                        decimals: 0,
+                                        postfix: ' days'
+                                    }
+                                })
+
+                                ]
+                            },
+                        });
+
+                        slider6.noUiSlider({
+                            range: {
+                                'min': [0],
+                                'max': [22]
+                            },
+                            start: [0],
+                            connect: 'upper',
+                            serialization: {
+                                lower: [
+
+                                new Link({
+                                    target: slider5,
+                                    method: crossUpdate
+                                }, false),
+
+                                new Link({
+                                    target: $("#slider6-span"),
+                                    format: {
+                                        decimals: 0,
+                                        postfix: ' days'
+                                    }
+                                })
+
+                                ]
+                            }
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+        <div id="gear-view">
+            <div id="gear-navbar">
+                <img class="pointer" src="images/selector.png">
+                <div id="button-wrapper">
+                    <i class="icon-bicycle" id="bike-button"></i>
+                    <i class="icon-wrench-1" id="tool-button"></i>
+                    <i class="fa fa-cutlery" id="food-button"></i>
+                    <i class="icon-campsite" id="camping-button"></i>
+                    <i class="icon-suitcase" id="luggage-button"></i>
+                    <i class="icon-hospital" id="safety-button"></i>
+                    <i class="icon-tablet" id="tech-button"></i>
+                </div>
+            </div>
+            <div id="bike-gear-grid" style="display: none">
+                <div class="gear-grid">
+                    <div class="gear-grid-image">
+                        <img src="images/bikegearphoto5.jpg">
+                    </div>
+                    <div class="gear-grid-row">
+                        <ul class="gear-grid-list">
+                            <li>
+                                <div class="gear-grid-list-c1">Bike</div>
+                                <div class="gear-grid-list-c2">Surly Long-Haul Trucker</div>
+                                <div class="gear-grid-list-c3">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <br>I purchased the 700C wheel version as a complete from a local bike shop and it proved
+                                    to be a bomb-proof bike. The only time I had to replace anything on it
+                                    was after a crash.</div>
+                            </li>
+                            <li>
+                                <div class="gear-grid-list-c1">Upgrades</div>
+                                <div class="gear-grid-list-c2">Retroshift CX2 Shifters</div>
+                                <div class="gear-grid-list-c3">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <br>Spending most of my riding time up on the hoods, these kept me from having
+                                    to reach for the bar ends.</div>
+                            </li>
+                            <li>
+                                <div class="gear-grid-list-c1-sub"></div>
+                                <div class="gear-grid-list-c2-sub">Shimano PD-M536 SPD Pedals</div>
+                                <div class="gear-grid-list-c3-sub">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <br>You either love them or hate them (clip-in pedals). I'm in the love camp.
+                                    These came off my 7+ year old mountain bike, but performed with absolutely
+                                    no issues.</div>
+                            </li>
+                            <li>
+                                <div class="gear-grid-list-c1-sub"></div>
+                                <div class="gear-grid-list-c2-sub"><a href="http://www.amazon.ca/gp/product/B0015UOUJQ/ref=as_li_ss_tl?ie=UTF8&camp=15121&creative=390961&creativeASIN=B0015UOUJQ&linkCode=as2&tag=66day-20">Schwalbe Marathon Plus Tires (35mm)</a><img src="http://ir-ca.amazon-adsystem.com/e/ir?t=66day-20&l=as2&o=15&a=B0015UOUJQ" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
+                                </div>
+                                <div class="gear-grid-list-c3-sub">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <br>Not a single flat in 6643 km! Enough said.</div>
+                            </li>
+                            <li>
+                                <div class="gear-grid-list-c1-sub"></div>
+                                <div class="gear-grid-list-c2-sub"><a href="http://www.amazon.ca/gp/product/B00AWNLDAQ/ref=as_li_ss_tl?ie=UTF8&camp=15121&creative=390961&creativeASIN=B00AWNLDAQ&linkCode=as2&tag=66day-20">Selle Royal Respiro Soft Athletic Saddle</a><img src="http://ir-ca.amazon-adsystem.com/e/ir?t=66day-20&l=as2&o=15&a=B00AWNLDAQ" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
+                                </div>
+                                <div class="gear-grid-list-c3-sub">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <br>Nothing too special, but provided a little extra ischial cushioning for
+                                    the slightly more upright riding position of the touring bike geometry.</div>
+                            </li>
+                            <li>
+                                <div class="gear-grid-list-c1">Accessories</div>
+                                <div class="gear-grid-list-c2">
+                                    SKS Bluemels Mudguards
+                                    </div>
+                                <div class="gear-grid-list-c3">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <br>The fit of these mudguards/fenders is superb with absolutely no rubbing or rattling. These definitely
+                                    made wet days less miserable!
+                                    </div>
+                            </li>
+                            <li>
+                                <div class="gear-grid-list-c1-sub"></div>
+                                <div class="gear-grid-list-c2-sub">Old Man Mountain Cold Springs Rear Rack</div>
+                                <div class="gear-grid-list-c3-sub">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <br>Also borrowed from my mountain bike, an extremely tough, axle-mounted rack for carrying heavier panniers.
+                                        No complaints here.
+                                    </div>
+                            </li>
+                            <li>
+                                <div class="gear-grid-list-c1-sub"></div>
+                                <div class="gear-grid-list-c2-sub">Arkel AC LowRider Front Rack</div>
+                                <div class="gear-grid-list-c3-sub">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <br>Tough rack with a low center of gravity. Got bent slightly off center after a crash, but was easily bent back
+                                        without structural damage.
+                                    </div>
+                            </li>
+                            <li>
+                                <div class="gear-grid-list-c1-sub"></div>
+                                <div class="gear-grid-list-c2-sub">Cable Lock</div>
+                                <div class="gear-grid-list-c3-sub">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <br>Not the most secure option for locking a bike, but relatively lightweight and very versatile. I was rarely more than 100m away from my bike for the whole trip, so I felt secure enough with this type of lock.</div>
+                            </li>
+                            <li>
+                                <div class="gear-grid-list-c1-sub"></div>
+                                <div class="gear-grid-list-c2-sub">Miscellaneous</div>
+                                <div class="gear-grid-list-c3-sub">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <br>Double-wrapped bar tape helped with road vibration.
+                                    <br>Bar-end mounted mirror was useful, although constantly required re-adjusting.</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div id="tool-gear-grid" style="display: none">
+                <div class="gear-grid">
+                    <div class="gear-grid-image">
+                        <img src="images/toolspartsphoto.jpg">
+                    </div>
+                    <div class="gear-grid-row">
+                        <ul class="gear-grid-list">
+                            <li>
+                                <div class="gear-grid-list-c1">Tools</div>
+                                <div class="gear-grid-list-c2">
+                                    Hex Driver/Chain Tool Multitool
+                                </div>
+                                <div class="gear-grid-list-c3">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <br>
+                                    The multi-tool was essential for making adjustments (to nearly every component of the bike over 
+                                    the course of the trip) although I never had need of the chain tool (never broke the chain).
+                                    </div>
+                            </li>
+                            <li>
+                                <div class="gear-grid-list-c1-sub"></div>
+                                <div class="gear-grid-list-c2-sub">Pedal Wrench</div>
+                                <div class="gear-grid-list-c3-sub">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <br>Taking a pedal wrench was overkill. It was useful when taking the bike apart to fly it home,
+                                    but being a fairly heavy item, ultimately not something I would take with me again. I suppose I could have clubbed a bear with it if the need/opportunity arose.</div>
+                            </li>
+                            <li>
+                                <div class="gear-grid-list-c1-sub"></div>
+                                <div class="gear-grid-list-c2-sub">Zip-Ties</div>
+                                <div class="gear-grid-list-c3-sub">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <br>Yes - they do deserve their own row <i class="fa fa-smile-o"></i>. I took about 50 medium-sized ties and somehow managed to use all of them. Most of them were used to hold together my fragile panniers.</div>
+                            </li>
+                            <li>
+                                <div class="gear-grid-list-c1-sub"></div>
+                                <div class="gear-grid-list-c2-sub">Pump</div>
+                                <div class="gear-grid-list-c3-sub">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <br>I went through three pumps. The first one I lost, the second one (from Canadian Tire) broke on its
+                                     second use. The third is the best I've owned - with a hose and pressure guage. No more hand-pumps for me!
+                                
+                                     </div>
+                            </li>
+                            <li>
+                                <div class="gear-grid-list-c1-sub"></div>
+                                <div class="gear-grid-list-c2-sub"><a href="http://www.amazon.ca/gp/product/B004WBL5PW/ref=as_li_ss_tl?ie=UTF8&camp=15121&creative=390961&creativeASIN=B004WBL5PW&linkCode=as2&tag=66day-20">Gerber Swagger 20cm folding Knife</a><img src="http://ir-ca.amazon-adsystem.com/e/ir?t=66day-20&l=as2&o=15&a=B004WBL5PW" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
+                                </div>
+                                <div class="gear-grid-list-c3-sub">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <br>Useful for cutting things <i class="fa fa-smile-o"></i>.
+                                
+                                     </div>
+                            </li>
+                            <li>
+                                <div class="gear-grid-list-c1">Parts</div>
+                                <div class="gear-grid-list-c2">
+                                    Spare Tube x2<br>
+                                    Spare Tire x1<br>
+                                    Tire Patch Kit x5<br>
+                                    Spare Brake Cable x2<br>
+                                    Spare Shifter Cable<br>
+                                    Spare Spoke x2<br>
+                                    Spare SPD Pedal Cleat x2
+                                    </div>
+                                <div class="gear-grid-list-c3">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <br>I grouped these all together because they all share something in common: I never used any
+                                        of them! Why five stars? I slept better knowing I had them all with me. SPD Cleats really don't 
+                                        wear out quickly though - I probably should have left those out.
+                                    </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div id="food-gear-grid" style="display: none">
+                <div class="gear-grid">
+                    <div class="gear-grid-image">
+                        <img src="images/cooking.jpg">
+                    </div>
+                    <div class="gear-grid-row">
+                        <ul class="gear-grid-list">
+                            <li>
+                                <div class="gear-grid-list-c1">Cooking</div>
+                                <div class="gear-grid-list-c2">
+                                <a href="http://www.amazon.ca/gp/product/B000EUMKFO/ref=as_li_ss_tl?ie=UTF8&camp=15121&creative=390961&creativeASIN=B000EUMKFO&linkCode=as2&tag=66day-20">MSR XGK-EX Multi-Fuel Stove </a><img src="http://ir-ca.amazon-adsystem.com/e/ir?t=66day-20&l=as2&o=15&a=B000EUMKFO" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
+<br>
+                                <a href="http://www.amazon.ca/gp/product/B0015HV75O/ref=as_li_ss_tl?ie=UTF8&camp=15121&creative=390961&creativeASIN=B0015HV75O&linkCode=as2&tag=66day-20">MSR Fuel Bottle</a><img src="http://ir-ca.amazon-adsystem.com/e/ir?t=66day-20&l=as2&o=15&a=B0015HV75O" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
+
+                                    
+                                </div>
+                                <div class="gear-grid-list-c3">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <br>I was so excited for this piece of gear - a liquid fuel stove with a reusable fuel bottle that can run off of unleaded
+                                        gasoline! I used it so infrequently (~15-20 meals) that I never used up the 650ml of white gas I filled it with before 
+                                        I left. If I did it again, I would just take a small solid fuel stove. Definitely over-powered for cooking, but not
+                                        impossible to use. Sounds like a jet!
+                                    </div>
+                            </li>
+                            <li>
+                                <div class="gear-grid-list-c1-sub"></div>
+                                <div class="gear-grid-list-c2-sub"><a href="http://www.amazon.ca/gp/product/B0020TVDDM/ref=as_li_ss_tl?ie=UTF8&camp=15121&creative=390961&creativeASIN=B0020TVDDM&linkCode=as2&tag=66day-20">MSR Alpine 2 Pot Set</a><img src="http://ir-ca.amazon-adsystem.com/e/ir?t=66day-20&l=as2&o=15&a=B0020TVDDM" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /></div>
+                                <div class="gear-grid-list-c3-sub">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <br> A nice lightweight pot/pan set with a detachable handle that fit my stove inside for storage. I only took the larger of
+                                    the two included pots with me.
+                                    </div>
+                            </li>
+                            <li>
+                                <div class="gear-grid-list-c1">Hydration</div>
+                                <div class="gear-grid-list-c2">Generic 750ml Bottle x2</div>
+                                <div class="gear-grid-list-c3">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <br>Filled these up wherever possible and added hydration mix on hot days.
+                                    </div>
+                            </li>
+                            <li>
+                                <div class="gear-grid-list-c1-sub"></div>
+                                <div class="gear-grid-list-c2-sub"><a href="http://www.amazon.ca/gp/product/B0027H3OQG/ref=as_li_ss_tl?ie=UTF8&camp=15121&creative=390961&creativeASIN=B0027H3OQG&linkCode=as2&tag=66day-20">1L Platypus PlusBottle x3</a><img src="http://ir-ca.amazon-adsystem.com/e/ir?t=66day-20&l=as2&o=15&a=B0027H3OQG" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /></div>
+                                <div class="gear-grid-list-c3-sub">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <br>These foldable bottles were perfect for carrying extra water on long days and in the heat. When empty,
+                                    they take up very little space and are lightweight. No leaks or complaints.
+                                    </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div id="camping-gear-grid" style="display: none">
+                <div class="gear-grid">
+                    <div class="gear-grid-image">
+                        <img src="images/campphoto1.jpg">
+                    </div>
+                    <div class="gear-grid-row">
+                        <ul class="gear-grid-list">
+                            <li>
+                                <div class="gear-grid-list-c1">Shelter</div>
+                                <div class="gear-grid-list-c2">Sierra Designs Tent (2 person)</div>
+                                <div class="gear-grid-list-c3">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <br>Graciously lent to me, this tent was an ideal size, allowing storage of most of my gear inside the tent
+                                        at night. I did a fresh seam seal on it before leaving, and it kept water out quite well except in utter
+                                         downpours.
+                                    </div>
+                            </li>
+                            <li>
+                                <div class="gear-grid-list-c1-sub"></div>
+                                <div class="gear-grid-list-c2-sub">Dollar-Store Tarp</div>
+                                <div class="gear-grid-list-c3-sub">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <br>Probably the best $2.50 spent on gear. In the downpours, this helped keep the inside of the tent drier (not completely dry, but what can you really expect for $2.50?).
+                                    </div>
+                            </li>
+                            <li>
+                                <div class="gear-grid-list-c1">Sleeping</div>
+                                <div class="gear-grid-list-c2"><a href="http://www.amazon.ca/gp/product/B005I6R0WC/ref=as_li_ss_tl?ie=UTF8&camp=15121&creative=390961&creativeASIN=B005I6R0WC&linkCode=as2&tag=66day-20">Thermarest Z-Lite SOL Sleeping Pad</a><img src="http://ir-ca.amazon-adsystem.com/e/ir?t=66day-20&l=as2&o=15&a=B005I6R0WC" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
+</div>
+                                <div class="gear-grid-list-c3">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <br>Not exactly plush, but super compact, lightweight and the thermal side kept me comfortable on the nights the temperature crept
+                                        below 0 C.
+                                    </div>
+                            </li>
+                            <li>
+                                <div class="gear-grid-list-c1-sub"></div>
+                                <div class="gear-grid-list-c2-sub">Down Sleeping Bag</div>
+                                <div class="gear-grid-list-c3-sub">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <br>A family heirloom, this lightweight down bag turned out to be perfect for the task. Due to its age, I don't have any specs on it,
+                                        but I'm glad I didn't take anything warmer or heavier! I can't say I was always warm at night, but I was never so cold that I couldn't sleep.
+                                    </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div id="luggage-gear-grid" style="display: none">
+                <div class="gear-grid">
+                    <div class="gear-grid-image">
+                        <img src="images/luggagegear.jpg">
+                    </div>
+                    <div class="gear-grid-row">
+                        <ul class="gear-grid-list">
+                            <li>
+                                <div class="gear-grid-list-c1">Luggage</div>
+                                <div class="gear-grid-list-c2">Axiom Grand Tour 45 & 30 Panniers</div>
+                                <div class="gear-grid-list-c3">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <br>These panniers were quite ightweight, provided many different-sized pockets, and were relateively inexpensive. Capacity-wise they were great as well, I wouldn't have wanted any more space to fill. At ~70lbs loaded, more space would not have been a good idea! I expected them to be more durable however. All of the small modular outer bags eventually tore away from the main bag, leaving holes that destroyed the water-proofing. Zip-ties held them together but I guess I was expecting to be able to use them again after this trip. Maybe I was expecting too much.</div>
+                            </li>
+                            <li>
+                                <div class="gear-grid-list-c1-sub"></div>
+                                <div class="gear-grid-list-c2-sub">Arkel Small Handlebar Bag</div>
+                                <div class="gear-grid-list-c3-sub">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <br>This bag was useful on many levels. I kept valuables (money & tech) in it, so when I locked up the bike when going into stores or at other stops, I could unclip it and use the shoulder strap to take it with me. Not strictly waterproof, but the water-resistant liner was enough to keep my tech inside safe from water damage.</div>
+                            </li>
+                            <li>
+                                <div class="gear-grid-list-c1">Wearables</div>
+                                <div class="gear-grid-list-c2">Lake MX-165 SPD Cycling Shoes</br>
+                                                               Lightweight Running Shoes</br>
+                                                               Flip-Flops</br>
+                                                               </div>
+                                <div class="gear-grid-list-c3">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <br>I was surprised at how many times I had to walk my bike up hills - sometimes due to grade, other times due to heavy traffic and shoulder conditions. I was glad that my cycling shoes were very walkable in these cases. The running shoes were great for days off were I wanted to walk in a little more comfort and flip-flops were great for walking around campsites at the end of the day.</div>
+                            </li>
+                            <li>
+                                <div class="gear-grid-list-c1-sub"></div>
+                                <div class="gear-grid-list-c2-sub">Gore Windstopper Base Layer</br>
+                                                                   Icebreaker Wool Tee</br>
+                                                                   </div>
+                                <div class="gear-grid-list-c3-sub">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <br>I'll spare you the details of every piece of clothing I took, but these two items were two of my favourites (both gifts - thanks again!). The base layer was so insulating on cold and windy days that I could get away without wearing my jacket. One item I forgot to pack was my warm cycling gloves. I missed these a lot on cold mornings (of which there were many!).</div>
+                            </li>
+                            <li>
+                                <div class="gear-grid-list-c1-sub"></div>
+                                <div class="gear-grid-list-c2-sub">Waterproof Jacket</br>
+                                                                   Waterproof Pants</br>
+                                                                   Helmet Cover</br>
+                                                                   Shoe Covers</br>
+                                </div>
+                                <div class="gear-grid-list-c3-sub">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <br>Ultimately not the most useful for longer-distance riding. I found that at most, rain gear would keep me dry for about 1 hour in moderate rain. Given that I averaged about 8-10 hours of riding a day, it was only really useful for short rainshowers. If it was raining heavily or for long periods, there wasn't much I could do to stay dry.</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div id="safety-gear-grid" style="display: none">
+                <div class="gear-grid">
+                    <div class="gear-grid-image">
+                        <img src="images/safetygear1.jpg">
+                    </div>
+                    <div class="gear-grid-row">
+                        <ul class="gear-grid-list">
+                            <li>
+                                <div class="gear-grid-list-c1">Ordnance</div>
+                                <div class="gear-grid-list-c2"><a href="http://www.amazon.ca/gp/product/B00DS3PU88/ref=as_li_ss_tl?ie=UTF8&camp=15121&creative=390961&creativeASIN=B00DS3PU88&linkCode=as2&tag=66day-20">Frontiersman Bear Spray</a><img src="http://ir-ca.amazon-adsystem.com/e/ir?t=66day-20&l=as2&o=15&a=B00DS3PU88" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /></div>
+                                <div class="gear-grid-list-c3">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <br>Lent to me from a fellow-adventurer, this was nice to have and nice to never need.</div>
+                            </li>
+                            <li>
+                                <div class="gear-grid-list-c1-sub"></div>
+                                <div class="gear-grid-list-c2-sub">Bug Spray (with Deet)</div>
+                                <div class="gear-grid-list-c3-sub">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <br>The bugs will still swarm, but less of them will touch down with this stuff all over you.</div>
+                            </li>
+                            <li>
+                                <div class="gear-grid-list-c1">Misc.</div>
+                                <div class="gear-grid-list-c2">Mini First Aid Kit</div>
+                                <div class="gear-grid-list-c3">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <br>The stars of this kit were the Ibuprofen (anti-inflammatory for muscle and joint pain - mainly after one crash) and Chlor-tripolon (antihistamine for particularly bad bug bites). Thankfully I never really needed the blood-and-gore parts of the kit.</div>
+                            </li>
+                            <li>
+                                <div class="gear-grid-list-c1-sub"></div>
+                                <div class="gear-grid-list-c2-sub">Sunscreen</div>
+                                <div class="gear-grid-list-c3-sub">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <br>I got lazy with it a few times near the begining and regretted it. I got some heavier SPF sunscreen for my face and ears after realizing that it kept getting burnt no matter how much I sprayed it. I also took a bunch of Eco-Lips SPF lip balm which was great at preventing wind and sun burn.</div>
+                            </li>
+                            <li>
+                                <div class="gear-grid-list-c1-sub"></div>
+                                <div class="gear-grid-list-c2-sub">Chamois Cream</div>
+                                <div class="gear-grid-list-c3-sub">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <br>I didn't use it all that much, but it kept things comfy on a number of occasions. I'll leave it at that.</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div id="tech-gear-grid" style="display: none">
+                <div class="gear-grid">
+                    <div class="gear-grid-image">
+                        <img src="images/techgear.jpg">
+                    </div>
+                    <div class="gear-grid-row">
+                        <ul class="gear-grid-list">
+                            <li>
+                                <div class="gear-grid-list-c1">Electronics</div>
+                                <div class="gear-grid-list-c2"><a href="http://www.amazon.ca/gp/product/B00FJ5VBQ8/ref=as_li_ss_tl?ie=UTF8&camp=15121&creative=390961&creativeASIN=B00FJ5VBQ8&linkCode=as2&tag=66day-20">iPhone</a><img src="http://ir-ca.amazon-adsystem.com/e/ir?t=66day-20&l=as2&o=15&a=B00FJ5VBQ8" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
+</div>
+                                <div class="gear-grid-list-c3">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <br>This was my favourite piece of tech over the trip. More below on apps that I found useful.</div>
+                            </li>
+                            <li>
+                                <div class="gear-grid-list-c1-sub"></div>
+                                <div class="gear-grid-list-c2-sub">iPod Nano</div>
+                                <div class="gear-grid-list-c3-sub">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <br>Nice to have for the days that weren't too windy and to liven up the monotonous days.</div>
+                            </li>
+                            <li>
+                                <div class="gear-grid-list-c1-sub"></div>
+                                <div class="gear-grid-list-c2-sub">Sony NEX-F3 Compact System Camera</div>
+                                <div class="gear-grid-list-c3-sub">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <br>Lightweight 16MP camera that created some great images to work with. With a 64GB SDXC card in it, I didn't have to carry extra memory even shooting at 16MP.</div>
+                            </li>
+                            <li>
+                                <div class="gear-grid-list-c1-sub"></div>
+                                <div class="gear-grid-list-c2-sub"><a href="http://www.amazon.ca/gp/product/B004XNLLQM/ref=as_li_ss_tl?ie=UTF8&camp=15121&creative=390961&creativeASIN=B004XNLLQM&linkCode=as2&tag=66day-20">Powertraveller Power Monkey Extreme 9000mAh Solar Charger</a><img src="http://ir-ca.amazon-adsystem.com/e/ir?t=66day-20&l=as2&o=15&a=B004XNLLQM" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
+                                </div>
+                                <div class="gear-grid-list-c3-sub">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <br>Another piece of gear I was really excited for. Unfortunately the solar panel failed for no apparent reason in the first week. The battery was still useful for charging my phone and Mp3 player (2 full phone charges in one discharge of the battery), but I had to find power outlets to charge it from.</div>
+                            </li>
+                            <li>
+                            <li>
+                                <div class="gear-grid-list-c1-sub"></div>
+                                <div class="gear-grid-list-c2-sub"><a href="http://www.amazon.ca/gp/product/B002HHQNL4/ref=as_li_ss_tl?ie=UTF8&camp=15121&creative=390961&creativeASIN=B002HHQNL4&linkCode=as2&tag=66day-20">Cateye Strada Double Wireless Computer</a><img src="http://ir-ca.amazon-adsystem.com/e/ir?t=66day-20&l=as2&o=15&a=B002HHQNL4" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
+                                </div>
+                                <div class="gear-grid-list-c3-sub">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <br>Just a basic cycling computer with speed and distance metrics. The CR-2032 sensor battery died in it after a month, and I didn't bother replacing it.</div>
+                            </li>
+                            <li>
+                                <div class="gear-grid-list-c1-sub"></div>
+                                <div class="gear-grid-list-c2-sub"><a href="http://www.amazon.ca/gp/product/B008KKNOD2/ref=as_li_ss_tl?ie=UTF8&camp=15121&creative=390961&creativeASIN=B008KKNOD2&linkCode=as2&tag=66day-20">Light and Motion Urban 400 Headlight</a><img src="http://ir-ca.amazon-adsystem.com/e/ir?t=66day-20&l=as2&o=15&a=B008KKNOD2" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
+                                                                   <br>Battery-powered Tail Light
+                                </div>
+                                <div class="gear-grid-list-c3-sub">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <br>Both borrowed from my commuter bike, I found I rarely needed these lights as I was never riding in the dark. On foggy and rainy days they were good to have though.</div>
+                            </li>
+                            <li>
+                                <div class="gear-grid-list-c1">Apps</div>
+                                <div class="gear-grid-list-c2">TrackMyTour</div>
+                                <div class="gear-grid-list-c3">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <br>This iPhone app was incredible. It allowed me to share GPS waypoints with anyone who had a link to my map and to stay in touch over the course of the trip. Even without 3G or WIFI, I could save waypoints offline for upload later. TrackMyTour even provides a .kml file download of all your waypoints after a trip, which I used to create the map at the top of this page. Check out my TrackMyTour map <a href="http://trackmytour.com/m8Lgv">here</a>.</div>
+                            </li>
+                            <li>
+                                <div class="gear-grid-list-c1-sub"></div>
+                                <div class="gear-grid-list-c2-sub">RideWithGPS</div>
+                                <div class="gear-grid-list-c3-sub">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <br>A web app that allowed me to create gpx files (GPS-tagged routes) of each day's route plan. Using these files, I could plan each day's distance and download the appropriate map tiles for offline viewing while on the road (using MOBAC below).</div>
+                            </li>
+                            <li>
+                                <div class="gear-grid-list-c1-sub"></div>
+                                <div class="gear-grid-list-c2-sub">Mobile Atlas Creator (MOBAC)</div>
+                                <div class="gear-grid-list-c3-sub">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <br>An app for OSX that allowed me to download map tiles for storage on my phone in order to be able to view and zoom maps of my route even when offline (in areas without 3G cell service).</div>
+                            </li>
+                            <li>
+                                <div class="gear-grid-list-c1-sub"></div>
+                                <div class="gear-grid-list-c2-sub">Galileo Offline Maps</div>
+                                <div class="gear-grid-list-c3-sub">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <br>An iPhone app that allowed me to transfer, manage and view all the offline maps I downloaded using MOBAC and RideWithGPS on my phone.</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- <div id="large-bike"></div>--></div>
+        <!-- Section #3 / Panoramas -->
+        <div id="panoramas">
+        <div class="panorama-overlay">
+            <div id="bc">
+                <img src="images/panoramas/bcpanorama.jpg">
+            </div>
+        </div>
+        <div class="panorama-overlay">
+            <div id="ab">
+                <img src="images/panoramas/abpanorama.jpg">
+            </div>
+        </div>
+        <div class="panorama-overlay">
+            <div id="sk">
+                <img src="images/panoramas/skpanorama.jpg">
+            </div>
+        </div>
+        <div class="panorama-overlay">
+            <div id="mb">
+                <img src="images/panoramas/mbpanorama.jpg">
+            </div>
+        </div>
+        <div class="panorama-overlay">
+            <div id="on">
+                <img src="images/panoramas/onpanorama.jpg">
+            </div>
+        </div>
+        <div class="panorama-overlay">
+            <div id="qc">
+                <img src="images/panoramas/qcpanorama.jpg">
+            </div>
+        </div>
+        <div class="panorama-overlay">
+            <div id="nb">
+                <img src="images/panoramas/nbpanorama.jpg">
+            </div>
+        </div>
+        <div class="panorama-overlay">
+            <div id="ns">
+                <img src="images/panoramas/nspanorama.jpg">
+            </div>
+        </div>
+        </div>
+        <div id="province-titles">
+            <div class="province-title-padding-first-item" id="bc-title">BC</div>
+            <div class="province-title-padding" id="ab-title">AB</div>
+            <div class="province-title-padding" id="sk-title">SK</div>
+            <div class="province-title-padding" id="mb-title">MB</div>
+            <div class="province-title-padding" id="on-title">ON</div>
+            <div class="province-title-padding" id="qc-title">QC</div>
+            <div class="province-title-padding" id="nb-title">NB</div>
+            <div class="province-title-padding" id="ns-title">NS</div>
+        </div>
+        <div id="province-buttons">
+            <div class="province-button float province-on" id="bc-button">
+                <a><img src="images/buttons/bcthumbbutton.png"></a>
+            </div>
+            <div class="province-button float" id="ab-button">
+                <a><img src="images/buttons/abthumbbutton1.png"></a>
+            </div>
+            <div class="province-button float" id="sk-button">
+                <a><img src="images/buttons/skthumbbutton1.png"></a>
+            </div>
+            <div class="province-button float" id="mb-button">
+                <a><img src="images/buttons/mbthumbbutton.png"></a>
+            </div>
+            <div class="province-button float" id="on-button">
+                <a><img src="images/buttons/onthumbbutton1.png"></a>
+            </div>
+            <div class="province-button float" id="qc-button">
+                <a><img src="images/buttons/qcthumbbutton1.png"></a>
+            </div>
+            <div class="province-button float" id="nb-button">
+                <a><img src="images/buttons/nbthumbbutton1.png"></a>
+            </div>
+            <div class="province-button float" id="ns-button">
+                <a><img src="images/buttons/nsthumbbutton1.png"></a>
+            </div>
+        </div>
+    </div>
+    <!-- Section #5 / The End-->
+    <div id="theend" class="outro">
+        <div id="bike-logo-wht">
+            <img src="images/66logowhite.png">
+        </div>
+        <div id="title-left-outro">
+        </div>
+        <div id="title-right-outro">
+            <div id="about-button">
+                <h1e>About</h1e>
+                <div id="down"><i class="fa fa-angle-down"></i></div>
+                <div id="up" style="display:none"><i class="fa fa-angle-up"></i></div>
+            </div>
+        </div>
+    </div>
+    <div id="about" style='display: none'>
+        <div id="about-titles">
+            <div id="first">The Author</div>
+            <div class="about-title">Credits</div>
+            <div class="about-title">Contact Me</div>
+        </div>
+        <div id="about-content">
+            <div class="iframe-wrapper">
+                <iframe src='contact/contactform.php' frameborder='0'></iframe>
+            </div>
+            <div id="credits">
+                I really enjoyed designing and building this site, but I didn't build it all on my own. Thanks to the authors and contributors of the following plugins and resources:
+                <ul>
+                    <li><i class="fa fa-dot-circle-o"></i>&nbsp&nbsp<a href="http://davetayls.me/jquery.kinetic/">jQuery.kinetic</a></li>
+                    <li><i class="fa fa-dot-circle-o"></i>&nbsp&nbsp<a href="http://refreshless.com/nouislider/">$.noUiSlider</a></li>
+                    <li><i class="fa fa-dot-circle-o"></i>&nbsp&nbsp<a href="http://fortawesome.github.io/Font-Awesome/">Font Awesome</a></li>
+                    <li><i class="fa fa-dot-circle-o"></i>&nbsp&nbsp<a href="http://snazzymaps.com">Snazzy Maps</a></li>
+                </ul>
+            </div>
+            <div id="author">
+                <img src="images/mephoto1.png">
+                <div id="bio"> Hi there, I'm Matthew Bennett. As you may have guessed, I am fond of cycling. And in case you were worried that I have some delusions about being a pro cyclist from my above comparisons to Le Tour, rest assured - I don't. As a cycling fan, it was just a fun benchmark to use. </br></br>
+                If you have any questions about your own cross-country tour plans, or just want to say hello, drop me a line over in the "Contact Me" section. I am by no means a cycle-touring expert, but I'd be happy to share any details of my experience you might be interested in.</div>
+            </div>
+            
+        </div>
+    </div>
+    <!-- // End of #main -->
+    <script src="js/gMapsScript.js"></script>
+    <script src="js/jquery.scripts.js"></script>
+    
+</body>
+
+</html>
